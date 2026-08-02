@@ -1,0 +1,566 @@
+// client/src/App.jsx
+
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
+
+import Lottie from 'lottie-react';
+import Timetable from './timetableadmin/timetable';
+import Timetable2 from './timetableadmin/timetable2.jsx';
+import CreateTimetable from './timetableadmin/creatett';
+import MasterFaculty from './timetableadmin/masterfaculty';
+import AddFaculty from './timetableadmin/addfaculty';
+import MasterRoom from './timetableadmin/masterroom';
+import MasterSem from './timetableadmin/mastersem';
+import AddSem from './timetableadmin/addsemester';
+import AddRoom from './timetableadmin/addroom';
+import LockedSummary from './timetableadmin/lockedsummary';
+import Login from './dashboard/login';
+import Messages from './timetableadmin/messages';
+import ForgotPassword from './dashboard/ForgotPassword';
+import SuperAdminPage from './dashboard/superadmin';
+import DeptAdminAssignPage from './dashboard/deptAdminAssign';
+import CommonSlot from './timetableadmin/commonslot.jsx';
+import Subjects from './timetableadmin/addsubjects';
+import ImportTT from './timetableadmin/importt.jsx';
+
+import ViewMRooms from './timetableadmin/viewmrooms';
+import MessagesPage from './timetableadmin/viewMessages.jsx';
+
+// import LockedView from './timetableviewer/viewer';
+import Note from './timetableadmin/addnote';
+import Navbar from './components/home/Navbar';
+import PrintSummary from './timetableadmin/printSummary';
+import LoadDistribution from './timetableadmin/loaddistribution';
+import RegistrationForm from './dashboard/register';
+import AllotmentForm from './timetableadmin/allotment';
+import MasterDelete from './timetableadmin/masterdelete';
+import AdminPage from './timetableadmin/admin';
+import ViewAllotmentPage from './timetableadmin/viewroomallotment';
+import CommonLoad from './timetableadmin/addcommonload';
+import MasterView from './timetableadmin/mastersearch';
+import View from './timetableadmin/masterview';
+import AllocatedRolesPage from './dashboard/allotedroles';
+import FirstYearLoad from './timetableadmin/firstyearload';
+import FirstYearFaculty from './timetableadmin/addfirstyearfaculty';
+import LunchLoad from './timetableadmin/addlunchload';
+import FacultyDeptHourLoad from './timetableadmin/viewdeptfacultyload.jsx';
+// import InstituteLoad from './timetableadmin/instituteload';
+// import ViewInstituteLoad from './timetableadmin/viewinstituteload';
+import EditMasterFaculty from './timetableadmin/editmasterfaculty';
+import ImportForm from './timetableadmin/importCentralRoom';
+// import MergePDFComponent from './filedownload/mergepdfdocuments';
+import TimetableMasterView from './timetableadmin/masterview';
+// import MasterDataTable from './timetableadmin/viewmasterclasstable.jsx';
+import FacultyLoadCalculation from './timetableadmin/facultyloadadmin.jsx';
+import MasterLoadDataTable from './timetableadmin/viewinstituteloadmaster.jsx';
+import Departmentloadallocation from './timetableadmin/departmentloadallocation.jsx';
+import FacultyHourLoad from './timetableadmin/facultyhourload.jsx';
+import FacultyLoadCOE from './timetableadmin/facultyloadcoe.jsx';
+import AdminClash from './timetableadmin/AdminClashes.jsx';
+
+import Home from './pages/Home';
+import GuidePage from './pages/GuidePage';
+import ErrorPage from './pages/ErrorPage.jsx';
+import animation404 from '../src/assets/404.json';
+import { LogoAnimation } from './components/login/LogoAnimation.jsx';
+import EventRegistration from './certificatemodule/pages/eventregistration';
+import CMDashboard from './certificatemodule/pages/cmdashboard';
+import CertificateForm from './certificatemodule/pages/certificatedesign';
+// import Certificate from './certificatemodule/pages/certificatetemplates/Certificate';
+import ServicePage from './pages/Service';
+import Participant from './certificatemodule/pages/participantdataupload';
+import UserEvents from './certificatemodule/pages/UserEvents';
+import UserLogos from './certificatemodule/pages/UserLogo.jsx';
+import UserSignatures from './certificatemodule/pages/UserSignatures.jsx';
+
+import EODashboard from './conferencemodule/layout/eodashboard';
+import Accomodation from './conferencemodule/Tabs/Accomodation';
+import HomeConf from './conferencemodule/Tabs/HomeConf';
+import Sidebar from './conferencemodule/components/Sidebar';
+import Speaker from './conferencemodule/Tabs/Speaker';
+import Committees from './conferencemodule/Tabs/Committees';
+import Sponsors from './conferencemodule/Tabs/Sponsors';
+import Awards from './conferencemodule/Tabs/Awards';
+import Announcement from './conferencemodule/Tabs/Annoumcement';
+import Contacts from './conferencemodule/Tabs/Contacts';
+import Images from './conferencemodule/Tabs/Images';
+import EventDates from './conferencemodule/Tabs/EventDates';
+import Participants from './conferencemodule/Tabs/Participants';
+import NavbarConf from './conferencemodule/Tabs/NavbarConf';
+import NavMenu from './conferencemodule/Tabs/NavMenu';
+import HomeLayout from './conferencemodule/Tabs/HomeLayout';
+import SpeakerLayout from './conferencemodule/Tabs/SpeakerLayout';
+import Customisation from './conferencemodule/Tabs/Customisation';
+import Location from './conferencemodule/Tabs/Location';
+import CommonTemplate from './conferencemodule/Tabs/CommonTemplate';
+import ConferencePage from './conferencemodule/Tabs/ConferencePage';
+
+import Template01 from './certificatemodule/pages/certificatetemplates/akleem';
+// import ViewCertificate from './certificatemodule/pages/participantCerti';
+import Template03 from './certificatemodule/pages/certificatetemplates/03_sarthak';
+
+import SponsorshipRate from './conferencemodule/Tabs/SponsorshipRates';
+import Event from './conferencemodule/Tabs/Events';
+import Souvenir from './conferencemodule/Tabs/Souvenir';
+
+import NirfRanking from './nirf/rankings';
+
+// imports for Quiz Module
+import CreateQuiz from './quizModule/creator/createQuiz/CreateQuiz';
+import AddQuestionHome from './quizModule/creator/addQuestion/AddQuestionHome';
+import AddInstruction from './quizModule/creator/addQuestion/AddInstruction';
+import PreviewInstructions from './quizModule/creator/addQuestion/PreviewInstructions';
+import Settings from './quizModule/creator/addQuestion/settings';
+import Quizzing from './quizModule/student/quizzing/Quizzing';
+// import Instructions from './quizModule/student/Instructions';
+import QuizFeedback from './quizModule/student/quizFeedback/QuizFeedback';
+import UserManagement from './dashboard/userManagement';
+import UserEventRegistration from './certificatemodule/pages/addEvent';
+
+import Form from './platform/Form.jsx';
+import PlatformLayout from './platform/PlatformLayout.jsx';
+import PlatformDashboard from './platform/PlatformDashboard.jsx';
+import PlatformConfig from './platform/PlatformConfig.jsx';
+import PlatformModules from './platform/PlatformModules.jsx';
+import PlatformData from './platform/PlatformData.jsx';
+
+// import fileUpload
+import FileUpload from './fileUpload/fileUploads.jsx';
+import PaymentPortal from './conferencemodule/pages/PaymentPortal.jsx';
+
+//import machine learning modules
+import LinearRegression from './mlcoursemodule/linearregression.jsx';
+
+//import for ml project of face recognition and attendance system
+import MLDashboard from './ml/MLDashboard';
+
+//import faculty rankings
+import FacultyDashboard from './instituterankings/facultydashboard.jsx';
+import Logs from './timetableadmin/logs.jsx';
+
+// ─── Attendance Module Imports ────────────────────────────────────
+import EditGroundTruth from './attendancemodule/editgroundtruth';
+import RollAssign from './attendancemodule/rollassign';
+// import FlaggedAssign from './attendancemodule/flaggedassign';
+import Attendancedoc from './attendancemodule/Attendancedoc';
+import ModelPerformance from './attendancemodule/modelperformance';
+import ModelAnalytics from './attendancemodule/ModelAnalytics';
+import AttendanceReport from './attendancemodule/AttendanceReport';
+import GroundTruthRTSP from './attendancemodule/groundtruthgen_rtsp';
+import GroundTruthUpload from './attendancemodule/groundtruthupload';
+import EmbeddingGeneration from './attendancemodule/EmbeddingGeneration';
+import ERPSync from './attendancemodule/ERPSync';
+import Camera from './attendancemodule/camera';
+import CameraPreview from './attendancemodule/cameraPreview';
+import FrameVerification from './attendancemodule/FrameVerification';
+import UnknownFaces from './attendancemodule/UnknownFaces';
+import SchedulerPage from './attendancemodule/SchedulerPage';
+import { ExtraClassPage, AlterClassPage } from './attendancemodule/extraAlterClasses';
+import LiveReportPage from './attendancemodule/LiveReportPage';
+import RecordStream from './attendancemodule/RecordStream';
+import ErpOverrides from './attendancemodule/ErpOverrides';
+import ErpOverrideAnalysis from './attendancemodule/ErpOverrideAnalysis';
+
+import AMSDashboard from './attendancemodule/AMSDashboard';
+import AMSLayout from './attendancemodule/AMSLayout';
+import CameraRegistry from './attendancemodule/camera';
+import InstituteIdentification from './attendancemodule/InstituteIdentification';
+import EditSessionDates from './attendancemodule/editSessionDates'; // 1. Added explicit file import string logic here
+import GpuMetrics from './attendancemodule/GpuMetrics';
+import NodeConsole from './attendancemodule/NodeConsole';
+import ReactConsole from './attendancemodule/ReactConsole';
+import AMSManual from './attendancemodule/manual';
+import TTManual from './timetableadmin/TTManual';
+import CertManual from './certificatemodule/CertManual';
+import ConfManual from './conferencemodule/ConfManual';
+
+// ─── Department Admin Module Imports ────────────────────────────
+import DeptAdminLayout from './deptadmin/DeptAdminLayout';
+import DeptDashboard from './deptadmin/DeptDashboard';
+import DeptReports from './deptadmin/DeptReports';
+import {
+    DeptAssignRolls,
+    DeptLiveRTSP,
+    DeptGroundTruthUpload,
+    DeptAttendanceReport,
+    DeptClassVerification,
+    DeptSubjectEmbeddings,
+    DeptConfidenceMonitor,
+} from './deptadmin/DeptAdminTools';
+import DeptMenuConfig from './attendancemodule/DeptMenuConfig';
+
+// Learning module — self-contained under src/learningModule; every screen
+// hangs off the single /learning/* route below.
+import LearningRoutes from './learningModule/LearningRoutes.jsx';
+
+//confifence monitor
+import ConfidenceMonitor from './attendancemodule/confidenceMonitor';
+import { MLDataFolder } from './attendancemodule/MLDataFolder.jsx';
+import MLFineTuning from './attendancemodule/MLFineTuning';
+
+function App() {
+  return (
+    <Router>
+      {/* <div className="app"> */}
+
+      {/* <h1>XCEED-Timetable Module</h1>  */}
+      <Navbar />
+
+      <Routes>
+        {/* Landing Page */}
+        <Route path="/" element={<Home />} />
+        <Route path="/guide" element={<GuidePage />} />
+        <Route path="/nirf" element={<NirfRanking />} />
+
+        <Route path="/services/:serviceId" element={<ServicePage />} />
+        {/* ********* */}
+
+        <Route path="/facultyrankings" element={<FacultyDashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        <Route path="/register" element={<RegistrationForm />} />
+        <Route path="/userroles" element={<AllocatedRolesPage />} />
+        <Route path="/superadmin" element={<SuperAdminPage />} />
+        <Route path="/usermanagement" element={<UserManagement />} />
+        <Route path="/fileupload" element={<FileUpload />} />
+        <Route path="/camera" element={<Camera />} />
+        <Route path="/cameras" element={<Camera />} />
+        <Route path="/camera/preview" element={<CameraPreview />} />
+
+        {/* <Route path="/timetable" element={<Timetable />} /> */}
+
+        <Route path="/tt">
+          <Route path="commonslot" element={<CommonSlot />} />
+          <Route path="dashboard" element={<CreateTimetable />} />
+          <Route path="viewmessages" element={<MessagesPage />} />
+          <Route path="masterview" element={<MasterView />} />
+          <Route path="masterfaculty" element={<MasterFaculty />} />
+          <Route path="masterroom" element={<MasterRoom />} />
+          <Route path="mastersem" element={<MasterSem />} />
+          <Route path="masterdelete" element={<MasterDelete />} />
+          <Route path="viewmrooms" element={<ViewMRooms />} />
+          {/* <Route path="masterdata" element={<MasterDataTable />} /> */}
+          <Route path="messages" element={<Messages />} />
+          <Route path="logs" element={<Logs />} />
+        </Route>
+
+        {/* Original Routes */}
+        <Route path="/tt/:generatedLink">
+          <Route index element={<Timetable />}></Route>
+          <Route path="addfaculty" element={<AddFaculty />} />
+          <Route path="importttdata" element={<ImportTT />} />
+          <Route path="addroom" element={<AddRoom />} />
+          <Route path="addcommonload" element={<CommonLoad />} />
+          <Route path="addlunchload" element={<LunchLoad />} />
+          <Route path="addsubjects" element={<Subjects />} />
+          <Route path="addsem" element={<AddSem />} />
+          <Route path="addnote" element={<Note />} />
+          <Route path="firstyearload" element={<FirstYearLoad />} />
+          <Route path="firstyearfaculty" element={<FirstYearFaculty />} />
+          <Route path="lockedsummary" element={<LockedSummary />} />
+          <Route path="generatepdf" element={<PrintSummary />} />
+          <Route path="loaddistribution" element={<LoadDistribution />} />
+          <Route path="roomallotment" element={<ViewAllotmentPage />} />
+          <Route path="editmasterfaculty" element={<EditMasterFaculty />} />
+          <Route path="facultyload" element={<FacultyDeptHourLoad />} />
+        </Route>
+
+        {/* Backup Routes - v1 */}
+        <Route path="/tt/v1/:generatedLink">
+          <Route index element={<Timetable2 />}></Route>
+          <Route path="addfaculty" element={<AddFaculty />} />
+          <Route path="importttdata" element={<ImportTT />} />
+          <Route path="addroom" element={<AddRoom />} />
+          <Route path="addcommonload" element={<CommonLoad />} />
+          <Route path="addlunchload" element={<LunchLoad />} />
+          <Route path="addsubjects" element={<Subjects />} />
+          <Route path="addsem" element={<AddSem />} />
+          <Route path="addnote" element={<Note />} />
+          <Route path="firstyearload" element={<FirstYearLoad />} />
+          <Route path="firstyearfaculty" element={<FirstYearFaculty />} />
+          <Route path="lockedsummary" element={<LockedSummary />} />
+          <Route path="generatepdf" element={<PrintSummary />} />
+          <Route path="loaddistribution" element={<LoadDistribution />} />
+          <Route path="roomallotment" element={<ViewAllotmentPage />} />
+          <Route path="editmasterfaculty" element={<EditMasterFaculty />} />
+        </Route>
+        {/* Same link */}
+        <Route path="classrooms" element={<ViewMRooms />} />
+        {/* Same link */}
+
+        {/* <Route path="/tt/viewtimetable" element={<LockedView/>} /> */}
+        <Route path="/tt/allotment" element={<AllotmentForm />} />
+        <Route path="/tt/allotment/import" element={<ImportForm />} />
+
+        <Route path="/tt/admin" element={<AdminPage />} />
+        <Route path="/tt/admin/adminview" element={<TimetableMasterView />} />
+        <Route
+          path="/tt/admin/facultyload"
+          element={<FacultyLoadCalculation />}
+        />
+        <Route path="tt/coe/facultyload" element={<FacultyLoadCOE />} />
+
+        {/* Same link */}
+        <Route path="/timetable">
+          <Route index element={<MasterView />} />
+          <Route
+            path="faculty/:facultyname"
+            element={<MasterView autofill />}
+          />
+        </Route>
+        {/* Same link */}
+
+        <Route path="/tt/admin/view" element={<View />} />
+        {/* <Route path="/tt/admin/instituteload" element={<InstituteLoad />} /> */}
+        {/* <Route path="/tt/viewinstituteload" element={<ViewInstituteLoad />} /> */}
+        <Route path="/tt/masterdata" element={<MasterLoadDataTable />} />
+
+        <Route path="/tt/admin/clashes" element={<AdminClash />} />
+        {/* <Route
+          path="/tt/:generatedLink/generatepdf/mergepdf"
+          element={<MergePDFComponent />}
+        /> */}
+        <Route
+          path="/tt/:generatedLink/generatepdf/loadallocation"
+          element={<Departmentloadallocation />}
+        />
+        <Route
+          path="/tt/:generatedLink/generatepdf/hourlyload"
+          element={<FacultyHourLoad />}
+        />
+
+        <Route path="/cm/addevent" element={<EventRegistration />} />
+        <Route path="/cm/dashboard" element={<CMDashboard />} />
+        <Route path="/cm/:eventid" element={<CertificateForm />} />
+        <Route path="/cm/:eventid/addparticipant" element={<Participant />} />
+        <Route path="/cm/c/:eventid/:participantid" element={<Template01 />} />
+        <Route
+          path="/cm/c/:eventid/:participantid/sarthak"
+          element={<Template03 />}
+        />
+        <Route path="/cm/useraddevent" element={<UserEventRegistration />} />
+        <Route path="/cm/userevents/:userId" element={<UserEvents />} />
+        <Route path="/cm/userimages/logos/:userId" element={<UserLogos />} />
+        <Route
+          path="/cm/userimages/signatures/:userId"
+          element={<UserSignatures />}
+        />
+        <Route path="/payment-portal" element={<PaymentPortal />} />
+
+        {/* Conference Module Admin-Panel */}
+        <Route path="/cf/dashboard" element={<EODashboard />} />
+        <Route path="/cf/addconf" element={<ConferencePage />} />
+        <Route path="/cf/:confid" element={<Sidebar />}>
+          <Route index element={<HomeConf />} />
+          <Route path="home" element={<HomeConf />} />
+          <Route path="speakers" element={<Speaker />} />
+          <Route path="speakerlayout" element={<SpeakerLayout />} />
+          <Route path="committee" element={<Committees />} />
+          <Route path="sponsors" element={<Sponsors />} />
+          <Route path="awards" element={<Awards />} />
+          <Route path="announcement" element={<Announcement />} />
+          <Route path="contact" element={<Contacts />} />
+          <Route path="images" element={<Images />} />
+          <Route path="eventdates" element={<EventDates />} />
+          <Route path="locations" element={<Location />} />
+          <Route path="participants" element={<Participants />} />
+          <Route path="navbar" element={<NavbarConf />} />
+          <Route path="navmenu" element={<NavMenu />} />
+          <Route path="homelayout" element={<HomeLayout />} />
+          <Route path="customisation" element={<Customisation />} />
+          {/* <Route path="template" element={<CommonTemplate/>} /> */}
+          <Route path="sponsorship-rates" element={<SponsorshipRate />} />
+          <Route path="accommodation" element={<Accomodation />} />
+          <Route path="events" element={<Event />} />
+          <Route path="souvenir" element={<Souvenir />} />
+          <Route path="commontemplate" element={<CommonTemplate />} />
+        </Route>
+
+        {/* Quiz Module Routes */}
+        <Route path="/quiz/createquiz" element={<CreateQuiz />}></Route>
+        <Route
+          path="/quiz/:code"
+          element={
+            <>
+              {' '}
+              <AddQuestionHome />{' '}
+            </>
+          }
+        />
+        <Route
+          path="/quiz/:code/addinstruction"
+          element={
+            <>
+              <AddInstruction />
+            </>
+          }
+        />
+        <Route
+          path="/quiz/:code/addinstruction/preview"
+          element={
+            <>
+              <PreviewInstructions />
+            </>
+          }
+        />
+        <Route
+          path="/quiz/:code/settings"
+          element={
+            <>
+              <Settings />
+            </>
+          }
+        />
+        {/* <Route path="/quiz/:code/result" element={<><ResultSummary /></>} /> */}
+        {/*<Route path="/addQuestionHome" element={<><AddQuestionHome /></>} /> */}
+
+        {/* quiz-student-routes */}
+        {/* <Route path="/quiz/:code/test" element={<Instructions />} /> */}
+        <Route path="/quiz/:code/live" element={<Quizzing />} />
+        <Route path="/quiz/:code/feedback" element={<QuizFeedback />} />
+
+        <Route
+          path="test-message"
+          element={
+            <ErrorPage
+              message="Custom error message..."
+              destinationName={false}
+              animation={<LogoAnimation style={{ opacity: '20%' }} />} // any type of component can be sent here
+            />
+          }
+        ></Route>
+        <Route
+          path="*"
+          element={
+            <ErrorPage
+              message="The page you are looking for does not exist..."
+              destination="/"
+              destinationName="Home"
+              animation={
+                <Lottie
+                  animationData={animation404}
+                  style={{ opacity: '15%' }}
+                />
+              }
+            />
+          }
+        ></Route>
+
+        {/* Platform Routes with Sidebar */}
+        <Route path="/platform" element={<PlatformLayout />}>
+          <Route index element={<PlatformDashboard />} />
+          <Route path="config" element={<PlatformConfig />} />
+          <Route path="modules" element={<PlatformModules />} />
+          <Route path="data" element={<PlatformData />} />
+        </Route>
+
+        <Route path="/ml/t1" element={<LinearRegression />} />
+        <Route path="/ml" element={<MLDashboard />} />
+
+        {/* ─── AMS Manual — public, no auth required ─────────────── */}
+        <Route path="/ams-manual" element={<AMSManual standalone />} />
+
+        {/* ─── TT Manual — public, no auth required ──────────────── */}
+        <Route path="/tt-manual" element={<TTManual standalone />} />
+
+        {/* ─── Certificate Manual — public, no auth required ─────── */}
+        <Route path="/certificate-manual" element={<CertManual standalone />} />
+
+        {/* ─── Conference Manual — public, no auth required ──────── */}
+        <Route path="/conference-manual" element={<ConfManual standalone />} />
+
+        {/* ─── Attendance Module Routes ──────────────────────────── */}
+        <Route
+          path="/iams-admin/*"
+          element={<Navigate to="/attendance" replace />}
+        />
+        <Route path="/attendance" element={<AMSLayout />}>
+          <Route index element={<AMSDashboard />} />
+
+          {/* 2. Session setup sub-route handler registered context array */}
+          <Route path="edit-session-dates" element={<EditSessionDates />} />
+
+          <Route path="groundtruth/assign" element={<RollAssign />} />
+          {/* <Route path="groundtruth/flagged"  element={<FlaggedAssign />} /> */}
+          <Route path="groundtruth/edit" element={<EditGroundTruth />} />
+          <Route path="groundtruth/unknown" element={<UnknownFaces />} />
+          <Route path="groundtruth/rtsp" element={<GroundTruthRTSP />} />
+          {/* <Route path="groundtruth/photos" element={<PhotoEdit />} /> */}
+          <Route path="groundtruth/upload" element={<GroundTruthUpload />} />
+          <Route path="institute-identification" element={<InstituteIdentification />} />
+          <Route path="record-stream" element={<RecordStream />} />
+          <Route path="embeddings" element={<EmbeddingGeneration />} />
+          <Route path="erp-sync" element={<ERPSync />} />
+          <Route path="report" element={<Attendancedoc />} />
+          <Route path="model" element={<ModelPerformance />} />
+          <Route path="model-analytics" element={<ModelAnalytics />} />
+          <Route path="reports" element={<AttendanceReport />} />
+          <Route path="frame-verification" element={<FrameVerification />} />
+          <Route path="dept-admins" element={<DeptAdminAssignPage />} />
+          <Route path="erp-overrides" element={<ErpOverrides />} />
+          <Route path="erp-overrides/:reportId" element={<ErpOverrideAnalysis />} />
+          <Route path="confidence" element={<ConfidenceMonitor />} />
+          <Route path="ml-fine-tuning" element={<MLFineTuning />} />
+          <Route path="acquisition-control" element={<SchedulerPage />} />
+          <Route path="extra-class" element={<ExtraClassPage />} />
+          <Route path="altering-class" element={<AlterClassPage />} />
+          <Route path="gpu" element={<GpuMetrics />} />
+          <Route path="server-console" element={<NodeConsole />} />
+          <Route path="client-console" element={<ReactConsole />} />
+          <Route path="dept-menu-config" element={<DeptMenuConfig />} />
+          <Route path="scheduler" element={<SchedulerPage />} />
+          <Route path="live-report" element={<LiveReportPage />} />
+          <Route path="view-mldata" element={<MLDataFolder />} />
+        </Route>
+
+        {/* ─── Department Admin Routes ────────────────────────────── */}
+        <Route path="/dept-admin" element={<DeptAdminLayout />}>
+          <Route index element={<DeptDashboard />} />
+          <Route path="dashboard" element={<DeptDashboard />} />
+          <Route path="live-rtsp" element={<DeptLiveRTSP />} />
+          <Route path="assign-rolls" element={<DeptAssignRolls />} />
+          <Route path="erp-upload" element={<DeptGroundTruthUpload />} />
+          <Route path="reports" element={<DeptAttendanceReport />} />
+          <Route path="class-verification" element={<DeptClassVerification />} />
+          <Route path="embeddings" element={<DeptSubjectEmbeddings />} />
+          <Route path="confidence" element={<DeptConfidenceMonitor />} />
+          <Route path="extra-class" element={<ExtraClassPage />} />
+          <Route path="altering-class" element={<AlterClassPage />} />
+          <Route path="stats/progress" element={<Navigate to="/dept-admin/dashboard" replace />} />
+          <Route path="dept-reports-view" element={<DeptReports />} />
+          <Route path="*" element={
+            <div style={{ padding: 48, textAlign: 'center' }}>
+              <h2 style={{ marginBottom: 12 }}>Access Restricted</h2>
+              <p style={{ color: '#666', marginBottom: 24 }}>
+                This section is not configured for your role.
+                Please contact the administrator to request access.              
+                </p>
+              <a href="mailto:xceeddev2@nitj.ac.in" style={{ color: '#6366f1', fontWeight: 600 }}>
+                Contact Admin
+              </a>
+            </div>
+          } />
+        </Route>
+
+        {/* ─── Learning Module ────────────────────────────────────── */}
+        <Route path="/learning/*" element={<LearningRoutes />} />
+
+        {/* Camera Registry — top-level but still inside AMSLayout */}
+        <Route path="/cameras" element={<AMSLayout />}>
+          <Route index element={<CameraRegistry />} />
+          <Route path="preview" element={<CameraPreview />} />
+        </Route>
+      </Routes>
+      {/* <Footer/> */}
+      {/* </div> */}
+    </Router>
+  );
+}
+
+export default App;

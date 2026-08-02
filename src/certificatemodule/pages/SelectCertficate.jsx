@@ -1,0 +1,371 @@
+import React from 'react';
+import CertificateContent from './certificatetemplates/basic01';
+import Template02 from './certificatetemplates/basic02';
+import Template03 from './certificatetemplates/basic03';
+import Template04 from './certificatetemplates/basic04';
+import Template05 from './certificatetemplates/basic05';
+import Template06 from './certificatetemplates/basic06';
+import Template07 from './certificatetemplates/basic07';
+import Template08 from './certificatetemplates/basic08';
+import Template09 from './certificatetemplates/basic09';
+import Template14 from './certificatetemplates/basic10';
+import Template17 from './certificatetemplates/basic11';
+import Template18 from './certificatetemplates/basic12';
+import Template19 from './certificatetemplates/basic13';
+import Template21 from './certificatetemplates/basic14';
+import Template22 from './certificatetemplates/basic15';
+import Template23 from './certificatetemplates/basic16';
+import Template10 from './certificatetemplates/premium01';
+import Template11 from './certificatetemplates/premium02';
+import Template12 from './certificatetemplates/premium03';
+import Template13 from './certificatetemplates/premium04';
+import Template15 from './certificatetemplates/premium05';
+import Template16 from './certificatetemplates/premium06';
+import Template20 from './certificatetemplates/premium07';
+
+function SelectCertficate({
+  templateId,
+  eventId,
+  contentBody,
+  certiType,
+  certificateOf,
+  title,
+  verifiableLink,
+  logos,
+  participantDetail,
+  signature,
+  header,
+  footer,
+}) {
+  const certiDesignTemp = [
+    <CertificateContent            //BASIC 01
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'0'}
+    />,
+    <Template02                   //BASIC 02
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'1'}
+    />,
+    <Template03                    //BASIC 03
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'2'}
+    />,
+    <Template04                    //BASIC 04
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      certificateOf={certificateOf}
+      title={title}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'3'}
+    />,
+    <Template05                     //BASIC 05
+      eventId={eventId}
+      contentBody={contentBody}
+      certificateOf={certificateOf}
+      certiType={certiType}
+      title={title}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'4'}
+    />,
+    <Template06                   //basic06
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'5'}
+    />,
+    <Template07                     //basic07
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'6'}
+    />,
+    <Template08                     //basic08
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      certificateOf={certificateOf}
+      title={title}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'7'}
+    />,
+
+    <Template09                    //BASIC 09
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'8'}
+    />,
+    <Template10                   //PREMIUM 01
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'9'}
+    />,
+    <Template11                   //PREMIUM 02
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'10'}
+    />,
+    <Template12                   //PREMIUM 03
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'11'}
+    />,
+    <Template13                   //PREMIUM 04
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'12'}
+    />,
+    <Template14                   //BASIC 10
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'13'}
+    />,
+    <Template15                   //PREMIUM 05
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'14'}
+    />,
+    <Template16                   //PREMIUM 06
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'15'}
+    />,
+    
+    <Template17                   //BASIC 11
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'16'}
+      />,
+
+      <Template18                   //BASIC 12
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'17'}
+      />,
+      <Template19                   //BASIC 13
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'18'}
+      />,
+      <Template20                   //PREMIUM 07
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'19'}
+      />,
+      <Template21                   //BASIC 14
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'20'}
+      />,
+      <Template22                   //BASIC 15
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'21'}
+      />,
+      <Template23                   //BASIC 16
+      eventId={eventId}
+      contentBody={contentBody}
+      certiType={certiType}
+      title={title}
+      certificateOf={certificateOf}
+      verifiableLink={verifiableLink}
+      logos={logos}
+      participantDetail={participantDetail}
+      signature={signature}
+      header={header}
+      footer={footer}
+      key={'22'}
+      />,
+  ];
+
+  return <div>{certiDesignTemp[templateId]}</div>;
+}
+
+export default SelectCertficate;

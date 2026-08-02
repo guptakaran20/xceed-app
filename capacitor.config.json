@@ -1,0 +1,9 @@
+{
+  "appId": "com.learning.module",
+  "appName": "Learning Module",
+  "webDir": "dist",
+  "server": {
+    "cleartext": true,
+    "androidScheme": "http"
+  }
+}

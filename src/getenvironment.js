@@ -1,0 +1,20 @@
+function getEnvironment() {
+  const currentURL = window.location.href;
+  const development = 'http://localhost:8010';
+  const androidEmulator = 'http://10.0.2.2:8010'; // 10.0.2.2 points to host PC in Android Emulator
+  const production = 'https://nitjtt.onrender.com';
+  const nitjServer = 'https://xceed.nitj.ac.in';
+  
+  if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+    return androidEmulator;
+  } else if (currentURL.includes('localhost') || currentURL.includes('127.0.0.1')) {
+    return development;
+  } else if (currentURL.includes('nitjtt')) {
+    return production;
+  } else {
+    // Default to a specific environment or handle other cases
+    return nitjServer;
+  }
+}
+
+export default getEnvironment;
