@@ -1,8 +1,9 @@
 {
-  "appId": "com.learning.module",
-  "appName": "Learning Module",
+  "appId": "in.ac.nitj.xceed.learning",
+  "appName": "XCEED",
   "webDir": "dist",
   "server": {
+    "hostname": "xceed.learning.app",
     "cleartext": true,
     "androidScheme": "http"
   }

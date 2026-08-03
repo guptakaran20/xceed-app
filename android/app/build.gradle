@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.learning.module"
+    namespace = "in.ac.nitj.xceed.learning"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.learning.module"
+        applicationId "in.ac.nitj.xceed.learning"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
