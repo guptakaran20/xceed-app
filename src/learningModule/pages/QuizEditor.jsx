@@ -871,52 +871,41 @@ export default function QuizEditor() {
               subtitle="Deterrents, not guarantees — a determined student can defeat any of them. What makes them useful is that every event is recorded on the attempt for you to review."
             >
               <Stack spacing={3}>
-                <Checkbox
-                  size="sm"
-                  isChecked={!settings.allowTabChange}
-                  onChange={(e) => setSetting('allowTabChange', !e.target.checked)}
-                >
-                  Record when a student leaves the test tab or window
-                </Checkbox>
-                {!settings.allowTabChange && (
-                  <Box pl={6}>
-                    <HStack>
-                      <FormControl maxW="140px">
-                        <FormLabel fontSize="xs">Allowed switches</FormLabel>
-                        <Input
-                          size="sm"
-                          type="number"
-                          min={0}
-                          value={settings.maxTabSwitches}
-                          onChange={(e) => setSetting('maxTabSwitches', Number(e.target.value) || 0)}
-                        />
-                      </FormControl>
-                    </HStack>
-                    <Checkbox
-                      mt={2}
-                      size="sm"
-                      isChecked={settings.autoSubmitOnTabLimit}
-                      onChange={(e) => setSetting('autoSubmitOnTabLimit', e.target.checked)}
-                    >
-                      Submit the test automatically once that limit is passed
-                    </Checkbox>
-                  </Box>
-                )}
+                {/* Not a checkbox, because it is not a choice any more: every
+                    paper is sat in fullscreen and the first departure submits
+                    it. Stated here so a teacher setting the paper knows exactly
+                    what their class will be held to. */}
+                <Box p={3} bg="orange.50" borderRadius="md" borderWidth="1px" borderColor="orange.200">
+                  <Text fontSize="sm" fontWeight="600" mb={1}>
+                    Always on: fullscreen lockdown
+                  </Text>
+                  <Text fontSize="xs" color="gray.700">
+                    Every test runs in fullscreen. Leaving fullscreen, or switching to another tab,
+                    window or application, submits the student&apos;s attempt immediately and records
+                    the reason on it. There is no allowance to configure — your students are told
+                    this on the pre-test screen before they can start.
+                  </Text>
+                </Box>
 
-                <Checkbox
-                  size="sm"
-                  isChecked={settings.preventMobile}
-                  onChange={(e) => setSetting('preventMobile', e.target.checked)}
-                >
-                  Block mobile devices (checked server-side on start)
-                </Checkbox>
-                <Checkbox
-                  size="sm"
-                  isChecked={settings.requireFullscreen}
-                  onChange={(e) => setSetting('requireFullscreen', e.target.checked)}
-                >
-                  Require fullscreen, and record when it is exited
-                </Checkbox>
+                {/* Named honestly. The check is on the User-Agent string, which
+                    a browser chooses for itself and any student can change from
+                    the devtools device toolbar in one click. It turns away the
+                    student who wandered in on a phone; it stops nobody who does
+                    not want to be stopped. Promising otherwise is worse than the
+                    gap, because a teacher plans around the promise. */}
+                <Box>
+                  <Checkbox
+                    size="sm"
+                    isChecked={settings.preventMobile}
+                    onChange={(e) => setSetting('preventMobile', e.target.checked)}
+                  >
+                    Discourage mobile devices
+                  </Checkbox>
+                  <Text fontSize="xs" opacity={0.6} ml={6}>
+                    Turns away phones that identify themselves as phones. Trivially bypassed — treat it as a
+                    nudge, not a control.
+                  </Text>
+                </Box>
                 <Checkbox
                   size="sm"
                   isChecked={settings.disableCopyPaste}

@@ -76,9 +76,8 @@ const PRESETS = {
       allowReviewBeforeSubmit: false,
       shuffleQuestions: true,
       shuffleOptions: true,
-      allowTabChange: false,
-      autoSubmitOnTabLimit: true,
-      requireFullscreen: true,
+      // Fullscreen and the submit-on-leaving rule are no longer per-quiz — they
+      // apply to every paper — so the preset only carries what still varies.
       disableCopyPaste: true,
       disableRightClick: true,
     },
@@ -388,7 +387,7 @@ function QuizRow({ quiz, classId, isTeacher, onPublish, onUnpublish, onDelete })
       wrap="wrap"
     >
       <Box flex="1" minW="220px">
-        <HStack wrap="wrap">
+        <HStack>
           <Heading size="sm">{quiz.title}</Heading>
           <Badge colorScheme={isExam ? 'red' : 'blue'}>{isExam ? '🎓 Exam' : '📝 Quiz'}</Badge>
           {quiz.source === 'ai' && <Badge colorScheme="purple">✨ AI</Badge>}
@@ -474,7 +473,7 @@ function QuizRow({ quiz, classId, isTeacher, onPublish, onUnpublish, onDelete })
         )}
       </Box>
 
-      <HStack wrap="wrap">
+      <HStack>
         {isTeacher ? (
           <>
             <Button as={RouterLink} to={`/learning/class/${classId}/quiz/${quiz._id}/edit`} size="sm" variant="outline">

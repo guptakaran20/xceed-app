@@ -5,8 +5,9 @@
 // Tab 2-5: config — periods & run settings, rooms, extra classes, stop days.
 
 import { useState, useEffect, useCallback } from 'react';
-import { theme, styles, cssReset } from './config';
+import { theme, styles, cssReset, formatSlotLabel } from './config';
 import BackButton from './BackButton';
+import { usePeriods } from './usePeriods';
 import getEnvironment from '../getenvironment';
 
 const apiUrl = getEnvironment();
@@ -14,55 +15,6 @@ export const AC_API = `${apiUrl}/attendancemodule/acquisitioncontrol`;
 export const CAMERA_API = `${apiUrl}/attendancemodule/cameras`;
 const SUBJECT_API = `${apiUrl}/timetablemodule/subject`;
 const FACULTY_API = `${apiUrl}/timetablemodule/faculty`;
-
-const PERIOD_KEYS = [
-  'period1',
-  'period2',
-  'period3',
-  'period4',
-  'period5',
-  'period6',
-  'period7',
-  'period8',
-  'lunch1',
-  'lunch2',
-];
-
-export const SLOT_LABELS = {
-  period1: 'Period 1 — 08:30–09:20',
-  period2: 'Period 2 — 09:20–10:10',
-  period3: 'Period 3 — 10:10–11:00',
-  period4: 'Period 4 — 11:00–11:50',
-  period5: 'Period 5 — 13:30–14:20',
-  period6: 'Period 6 — 14:20–15:10',
-  period7: 'Period 7 — 15:10–16:00',
-  period8: 'Period 8 — 16:00–16:50',
-  lunch1: 'Lunch Slot 1 — 12:00–12:50',
-  lunch2: 'Lunch Slot 2 — 12:50–13:30',
-};
-
-const LOGIC_OPTIONS = [
-  {
-    value: 'majority',
-    label: 'Majority Runs',
-    hint: 'Present if >50% of runs detect the student',
-  },
-  {
-    value: 'any_run',
-    label: 'Any Run',
-    hint: 'Present if detected in at least 1 run',
-  },
-  {
-    value: 'all_runs',
-    label: 'All Runs',
-    hint: 'Present only if detected in every run',
-  },
-  {
-    value: 'first_run',
-    label: 'First Run Only',
-    hint: 'Only the first run counts',
-  },
-];
 
 const DURATION_OPTIONS = [30, 60, 90, 120, 180, 300];
 
@@ -473,7 +425,9 @@ function PeriodCard({ period, onSave }) {
       >
         <div style={{ fontSize: 13, fontWeight: 700, color: theme.text }}>
           {isLunch ? '🍱 ' : '📅 '}
-          {SLOT_LABELS[period.periodKey] || period.periodKey}
+          {/* Label reflects the times being edited in this very card, so a
+              saved change is visible immediately. */}
+          {formatSlotLabel(period.periodKey, [form])}
         </div>
         <Toggle
           value={form.enabled !== false}
@@ -527,13 +481,20 @@ function PeriodCard({ period, onSave }) {
 // ── Global run-settings editor ───────────────────────────────────────────────
 function GlobalEditor({ config, onSave }) {
   const [form, setForm] = useState({
-    globalPresentLogic: config?.globalPresentLogic || 'majority',
+    globalMinRunsPresent: config?.globalMinRunsPresent || 1,
     globalNumRuns: config?.globalNumRuns || 1,
     globalRunDurationSec: config?.globalRunDurationSec || 120,
   });
   const [saving, setSaving] = useState(false);
 
-  const update = (k, v) => setForm((p) => ({ ...p, [k]: v }));
+  const update = (k, v) => setForm((p) => {
+    const next = { ...p, [k]: v };
+    // minRunsPresent can never exceed the total number of runs
+    if (next.globalMinRunsPresent > next.globalNumRuns) {
+      next.globalMinRunsPresent = next.globalNumRuns;
+    }
+    return next;
+  });
 
   const handleSave = async () => {
     setSaving(true);
@@ -608,42 +569,23 @@ function GlobalEditor({ config, onSave }) {
         <strong>period duration ÷ number of runs</strong>.
       </div>
       <div style={{ marginBottom: 18 }}>
-        <Label>Present Logic</Label>
-        <div
-          style={{ display: 'flex', gap: 8, marginTop: 6, flexWrap: 'wrap' }}
-        >
-          {LOGIC_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              title={opt.hint}
-              onClick={() => update('globalPresentLogic', opt.value)}
-              style={{
-                padding: '7px 16px',
-                borderRadius: 6,
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: 'pointer',
-                border: '1px solid',
-                borderColor:
-                  form.globalPresentLogic === opt.value
-                    ? theme.accent
-                    : theme.border,
-                background:
-                  form.globalPresentLogic === opt.value
-                    ? theme.accentDim
-                    : 'transparent',
-                color:
-                  form.globalPresentLogic === opt.value
-                    ? theme.accent
-                    : theme.textMuted,
-              }}
-            >
-              {opt.label}
-            </button>
-          ))}
+        <Label>Runs Required to Mark Present</Label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 6 }}>
+          <select
+            value={form.globalMinRunsPresent}
+            onChange={(e) => update('globalMinRunsPresent', Number(e.target.value))}
+            style={{ ...styles.select, width: 90 }}
+          >
+            {Array.from({ length: form.globalNumRuns }, (_, i) => i + 1).map((n) => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+          <span style={{ fontSize: 12, color: theme.textMuted }}>
+            out of {form.globalNumRuns} run{form.globalNumRuns > 1 ? 's' : ''}
+          </span>
         </div>
         <div style={{ fontSize: 10, color: theme.textMuted, marginTop: 5 }}>
-          {LOGIC_OPTIONS.find((o) => o.value === form.globalPresentLogic)?.hint}
+          A student is marked Present if detected in at least {form.globalMinRunsPresent} of the {form.globalNumRuns} run{form.globalNumRuns > 1 ? 's' : ''} for the period.
         </div>
       </div>
       <button
@@ -729,6 +671,7 @@ const EMPTY_EXTRA = {
 
 //extra class tab
 export function ExtraClassForm({ onAdd, allRooms }) {
+  const { slotLabel, slotKeys } = usePeriods();
   const [form, setForm] = useState({ ...EMPTY_EXTRA });
   const [saving, setSaving] = useState(false);
   const [semesters, setSemesters] = useState([]);
@@ -803,9 +746,9 @@ export function ExtraClassForm({ onAdd, allRooms }) {
             onChange={(e) => update('periodKey', e.target.value)}
             style={styles.select}
           >
-            {PERIOD_KEYS.map((k) => (
+            {slotKeys.map((k) => (
               <option key={k} value={k}>
-                {SLOT_LABELS[k]}
+                {slotLabel(k)}
               </option>
             ))}
           </select>
@@ -942,6 +885,7 @@ const EMPTY_ALTER = {
 };
 
 export function AlterClassForm({ onAdd }) {
+  const { slotLabel, slotKeys } = usePeriods();
   const [form, setForm] = useState({ ...EMPTY_ALTER });
   const [semesters, setSemesters] = useState([]);
   const [allSubjects, setAllSubjects] = useState([]);
@@ -1044,9 +988,9 @@ export function AlterClassForm({ onAdd }) {
             }}
             style={styles.select}
           >
-            {PERIOD_KEYS.map((k) => (
+            {slotKeys.map((k) => (
               <option key={k} value={k}>
-                {SLOT_LABELS[k]}
+                {slotLabel(k)}
               </option>
             ))}
           </select>
@@ -1238,7 +1182,8 @@ export default function SchedulerPage() {
       return;
     }
     await fetchConfig();
-    showToast(`${SLOT_LABELS[periodKey] || periodKey} saved`);
+    // `data` is the updated period, so the toast quotes the new timing back.
+    showToast(`${formatSlotLabel(periodKey, [data])} saved`);
   };
 
   const upsertRoom = async (form) => {

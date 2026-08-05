@@ -14,14 +14,6 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@capacitor/android": "^8.5.0",
-    "@capacitor/browser": "^8.0.4",
-    "@capacitor/camera": "^8.2.2",
-    "@capacitor/core": "^8.5.0",
-    "@capacitor/filesystem": "^8.1.2",
-    "@capacitor/share": "^8.0.1",
-    "@capawesome/capacitor-file-picker": "^8.0.4",
-    "@capgo/capacitor-downloader": "^8.1.31",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@ckeditor/ckeditor5-build-classic": "^41.4.2",
@@ -92,8 +84,6 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
-    "@capacitor/assets": "^3.0.5",
-    "@capacitor/cli": "^8.5.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

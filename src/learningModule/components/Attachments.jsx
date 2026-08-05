@@ -11,7 +11,6 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import lmApi from '../api/lmApi';
-import { takePhotoNative, isNativeApp } from '../../utils/nativeCapabilities';
 
 const ICONS = { file: '📎', link: '🔗', video: '🎬', audio: '🎧', note: '📝' };
 
@@ -94,24 +93,6 @@ export function AttachmentPicker({ attachments = [], onChange, disabled }) {
     }
   };
 
-  const handleCamera = async () => {
-    const photo = await takePhotoNative();
-    if (photo && photo.webPath) {
-      setUploading(true);
-      try {
-        const response = await fetch(photo.webPath);
-        const blob = await response.blob();
-        const file = new File([blob], `photo_${Date.now()}.${photo.format}`, { type: `image/${photo.format}` });
-        const result = await lmApi.uploadFiles([file]);
-        onChange([...attachments, ...result.attachments]);
-      } catch (error) {
-        toast({ status: 'error', title: 'Camera upload failed', description: error.message });
-      } finally {
-        setUploading(false);
-      }
-    }
-  };
-
   // Committed on Enter, on the Add button and on blur — a URL left sitting in
   // the box used to be thrown away when the composer was saved.
   const addLink = () => {
@@ -137,18 +118,6 @@ export function AttachmentPicker({ attachments = [], onChange, disabled }) {
         >
           Attach files
         </Button>
-        {isNativeApp() && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleCamera}
-            isLoading={uploading}
-            isDisabled={disabled}
-            leftIcon={<span>📷</span>}
-          >
-            Take Photo
-          </Button>
-        )}
         <Input
           size="sm"
           placeholder="Paste a link"

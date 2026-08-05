@@ -315,20 +315,23 @@ useEffect(() => {
         }
     }
 
-    async function handleStop() {
-        if (!activeRecId) return;
-        const stoppedRec = recordings.find(r => r.recordingId === activeRecId);
+    async function handleStop(recIdFromClick) {
+        const idToStop = typeof recIdFromClick === 'string' ? recIdFromClick : activeRecId;
+        if (!idToStop) return;
+        const stoppedRec = recordings.find(r => r.recordingId === idToStop);
         await apiFetch(`${REC_API}/stop`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ recordingId: activeRecId }),
+            body: JSON.stringify({ recordingId: idToStop }),
         });
         if (stoppedRec) {
             const stoppedAt = new Date().toLocaleString();
             const duration = stoppedRec.started ? elapsed(stoppedRec.started) : '—';
             setHistory(prev => [{ label: stoppedRec.label, stoppedAt, duration, filename: stoppedRec.filename, format: stoppedRec.format, department, year, selectedRoom }, ...prev]);
         }
-        setActiveRecId(null);
+        if (idToStop === activeRecId) {
+            setActiveRecId(null);
+        }
         showToast('Recording stopped', 'info');
         setTimeout(refreshList, 1500);
     }
@@ -403,26 +406,16 @@ async function handleSchedulerSubmit() {
 }
 
     async function handleDownload(url, suggestedName, type) {
-        showToast(type === 'audio' ? 'Preparing audio…' : 'Downloading video…', 'info');
+        showToast(type === 'audio' ? 'Preparing audio download…' : 'Starting video download…', 'info');
         try {
-            const res = await apiFetch(url);
-            if (!res.ok) {
-                let errMsg = `Download failed (${res.status})`;
-                try { const d = await res.json(); errMsg = d.error || errMsg; } catch {}
-                showToast(errMsg, 'error');
-                return;
-            }
-            const blob = await res.blob();
-            const blobUrl = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = blobUrl;
+            a.href = url;
             a.download = suggestedName || '';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
         } catch {
-            showToast('Download failed — check server connection', 'error');
+            showToast('Download failed', 'error');
         }
     }
 
@@ -749,17 +742,18 @@ if (recDate !== today) return false;
                     return rec.label?.toUpperCase().startsWith(prefix);
                 }).reverse().map(rec => {
                     const isActive = rec.recordingId === activeRecId;
+                    const isRecording = rec.status === 'recording' || isActive;
                     return (
                         <div key={rec.recordingId} style={{
-                            border: `1px solid ${isActive ? T.accent : T.border}`,
+                            border: `1px solid ${isRecording ? T.accent : T.border}`,
                             borderRadius: 10, padding: '14px 18px',
-                            background: isActive ? T.accentDim : T.surface,
+                            background: isRecording ? T.accentDim : T.surface,
                             display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
                         }}>
                             <span style={{
                                 width: 9, height: 9, borderRadius: '50%', flexShrink: 0,
-                                background: isActive ? '#ef4444' : T.success,
-                                animation: isActive ? 'pulse 1s infinite' : 'none',
+                                background: isRecording ? '#ef4444' : T.success,
+                                animation: isRecording ? 'pulse 1s infinite' : 'none',
                             }} />
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontWeight: 700, fontSize: 13, color: T.text, marginBottom: 3, wordBreak: 'break-all' }}>
@@ -767,12 +761,12 @@ if (recDate !== today) return false;
                                 </div>
                                 <div style={{ fontSize: 11, color: T.textMuted, fontFamily: T.fontMono }}>
                                     {new Date(rec.started * 1000).toLocaleTimeString()}
-                                    {isActive && ` · ${elapsed(rec.started, now)}`}
+                                    {isRecording && ` · ${elapsed(rec.started, now)}`}
                                     {rec.sizeBytes > 0 && ` · ${fmt(rec.sizeBytes)}`}
-                                    {isActive && ' · recording'}
+                                    {isRecording && ' · recording'}
                                 </div>
                             </div>
-                            {!isActive && rec.status === 'done' && (
+                            {!isRecording && rec.status === 'done' && (
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
                                     <div style={{ fontSize: 10, color: T.textMuted, textAlign: 'right' }}>
                                         {rec.format === 'video' ? '📹 Video Only' : rec.format === 'audio' ? '🎵 Audio Only' : '🎬 Video + Audio'}
@@ -793,8 +787,8 @@ if (recDate !== today) return false;
                                     </div>
                                 </div>
                             )}
-                            {isActive && (
-                                <button onClick={handleStop} style={{ padding: '7px 14px', borderRadius: 7, fontSize: 12, fontWeight: 700, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)', cursor: 'pointer' }}>
+                            {isRecording && (
+                                <button onClick={() => handleStop(rec.recordingId)} style={{ padding: '7px 14px', borderRadius: 7, fontSize: 12, fontWeight: 700, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)', cursor: 'pointer' }}>
                                     ⏹ Stop
                                 </button>
                             )}
@@ -814,18 +808,27 @@ if (recDate !== today) return false;
                 </div>
             );
         }
-        const filteredHistory = history.filter(h => {
-            if (
-                h.department !== department ||
-                h.year !== year ||
-                h.selectedRoom !== selectedRoom
-            )
-                return false;
+        const prefix = [degree, department, year, selectedRoom]
+            .filter(Boolean).join('_').toUpperCase().replace(/\s+/g, '_');
 
-            if (!historyDate) return true;
-
-            return h.filename?.includes(historyDate.replaceAll('-', ''));
-        });
+        const filteredHistory = recordings
+            .filter(rec => {
+                if (rec.status !== 'done' || !rec.filename) return false;
+                if (!rec.label?.toUpperCase().startsWith(prefix)) return false;
+                if (!historyDate) return true;
+                return rec.filename.includes(historyDate.replaceAll('-', ''));
+            })
+            .map(rec => {
+                const local = history.find(h => h.filename === rec.filename);
+                return {
+                    label: rec.label,
+                    stoppedAt: local?.stoppedAt || (rec.started ? new Date(rec.started * 1000).toLocaleString() : '—'),
+                    duration: local?.duration || '—',
+                    filename: rec.filename,
+                    format: rec.format || 'video+audio'
+                };
+            })
+            .reverse();
         return (
           <>
           <div style={{ display: 'flex', gap: 8, alignItems: 'end', marginBottom: 16 }}> 

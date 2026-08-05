@@ -149,6 +149,7 @@ const lmApi = {
         grantRoleToExisting: Boolean(options.grantRoleToExisting),
       },
     }),
+  inviteStatus: (classId, batchId) => request(`/classes/${classId}/members/invite-status/${batchId}`),
   decideJoinRequest: (classId, membershipId, approve) =>
     request(`/classes/${classId}/members/${membershipId}/decide`, { method: 'POST', body: { approve } }),
   updateMember: (classId, membershipId, body) =>
@@ -242,6 +243,11 @@ const lmApi = {
     request(`/classes/${classId}/attempts/${attemptId}/save`, { method: 'POST', body: { answers } }),
   recordViolation: (classId, attemptId, type) =>
     request(`/classes/${classId}/attempts/${attemptId}/violation`, { method: 'POST', body: { type } }),
+  // Sent on a timer while a paper is open. Its absence is the signal — a client
+  // that has had its reporting blocked stops sending these, and the server notes
+  // the silence.
+  heartbeat: (classId, attemptId) =>
+    request(`/classes/${classId}/attempts/${attemptId}/heartbeat`, { method: 'POST', body: {} }),
   submitAttempt: (classId, attemptId, answers, expired = false) =>
     request(`/classes/${classId}/attempts/${attemptId}/submit`, {
       method: 'POST',
@@ -255,6 +261,19 @@ const lmApi = {
     request(`/classes/${classId}/attempts/${attemptId}/reopen`, { method: 'POST', body }),
   deleteQuizAttempt: (classId, attemptId) =>
     request(`/classes/${classId}/attempts/${attemptId}`, { method: 'DELETE' }),
+
+  /* correcting the answer key of a paper the class has already sat.
+     `questions` is [{ questionId, correctAnswers, marks, negativeMarks,
+     tolerancePercent, toleranceAbs, explanation }] — only the fields sent are
+     written, and the whole cohort is re-marked unless `regrade: false`. */
+  updateAnswerKey: (classId, quizId, questions, regrade = true) =>
+    request(`/classes/${classId}/quizzes/${quizId}/answer-key`, {
+      method: 'PATCH',
+      body: { questions, regrade },
+    }),
+  // Re-mark every finished sitting against the answer key as it stands now.
+  regradeQuiz: (classId, quizId) =>
+    request(`/classes/${classId}/quizzes/${quizId}/regrade`, { method: 'POST', body: {} }),
 
   /* parameterised tutorials */
   listTutorials: (classId) => request(`/classes/${classId}/tutorials`),
@@ -349,6 +368,9 @@ const lmApi = {
   // whether to show the queue at all.
   allBugReports: ({ status, kind } = {}) => request(`/bugs${qs({ status, kind })}`),
   reviewBug: (reportId, body) => request(`/bugs/${reportId}`, { method: 'PATCH', body }),
+
+  /* lm-admin dashboard — platform-wide stats, 403 for anyone else */
+  adminSummary: () => request('/admin/summary'),
 
   /* ---- discussion forum ---- */
   listDiscussions: (classId) => request(`/classes/${classId}/discussions`),
