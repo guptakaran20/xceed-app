@@ -1,0 +1,162 @@
+import React, { useState } from 'react';
+import {
+  VStack,
+  HStack,
+  PinInput,
+  PinInputField,
+  Button,
+  Text,
+  Heading,
+  useToast,
+  Link,
+  Box
+} from '@chakra-ui/react';
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
+import { redirectTargetFrom } from '../../authRedirect';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+const PinEntry = ({ onCancel, isSetup, onSetupComplete, loginToken }) => {
+  const [pin, setPin] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handlePinComplete = async (value) => {
+    setPin(value);
+  };
+
+  const handleSubmit = async () => {
+    if (pin.length !== 4) return;
+    setIsLoading(true);
+    
+    try {
+      if (isSetup) {
+        // Save PIN and Token to Secure Storage
+        await SecureStoragePlugin.set({ key: 'user_pin', value: pin });
+        await SecureStoragePlugin.set({ key: 'auth_token', value: loginToken });
+        
+        toast({
+          title: 'PIN configured successfully.',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+        
+        // Also ensure token is in localStorage so rest of app works
+        localStorage.setItem('token', loginToken);
+        
+        if (onSetupComplete) {
+          onSetupComplete();
+        } else {
+          navigate('/userroles');
+        }
+      } else {
+        // Verify PIN
+        const storedPinResult = await SecureStoragePlugin.get({ key: 'user_pin' });
+        const storedPin = storedPinResult.value;
+        
+        if (pin === storedPin) {
+          // Success! Restore token to localStorage and navigate
+          const storedTokenResult = await SecureStoragePlugin.get({ key: 'auth_token' });
+          if (storedTokenResult.value) {
+             localStorage.setItem('token', storedTokenResult.value);
+             window.location.href = redirectTargetFrom(location.search) || '/userroles';
+          } else {
+             throw new Error('Token missing');
+          }
+        } else {
+          toast({
+            title: 'Incorrect PIN.',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          });
+          setPin('');
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Error processing PIN.',
+        description: error.message || 'Please try again.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      setPin('');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResetPin = async () => {
+    try {
+      await SecureStoragePlugin.remove({ key: 'user_pin' });
+      await SecureStoragePlugin.remove({ key: 'auth_token' });
+      localStorage.removeItem('token');
+      if (onCancel) onCancel();
+    } catch (e) {
+      console.error(e);
+      if (onCancel) onCancel();
+    }
+  };
+
+  return (
+    <VStack spacing={6} align="center" w="100%">
+      <Heading size="md" color="white">{isSetup ? 'Create a 4-Digit PIN' : 'Enter your PIN'}</Heading>
+      <Text color="gray.300" textAlign="center">
+        {isSetup 
+          ? 'Set a PIN for quick access in the future.'
+          : 'Use your PIN to quickly access your account.'}
+      </Text>
+      
+      <HStack>
+        <PinInput 
+          type="number" 
+          value={pin} 
+          onChange={setPin} 
+          onComplete={handlePinComplete}
+          mask
+          autoFocus
+        >
+          <PinInputField bg="white" color="black" />
+          <PinInputField bg="white" color="black" />
+          <PinInputField bg="white" color="black" />
+          <PinInputField bg="white" color="black" />
+        </PinInput>
+      </HStack>
+
+      <Button
+        isLoading={isLoading}
+        onClick={handleSubmit}
+        isDisabled={pin.length !== 4}
+        colorScheme='blackAlpha'
+        bg={'blackAlpha.900 !important'}
+        width={'100%'}
+        mt={4}
+      >
+        {isSetup ? 'Save PIN' : 'Unlock'}
+      </Button>
+
+      <Box mt={4}>
+        {!isSetup ? (
+          <Link color="blue.300" onClick={handleResetPin} fontSize="sm">
+            Forgot PIN? Login with Password
+          </Link>
+        ) : (
+          <Link color="gray.400" onClick={() => {
+            // Skip PIN setup
+            localStorage.setItem('token', loginToken);
+            if (onSetupComplete) onSetupComplete();
+            else navigate('/userroles');
+          }} fontSize="sm">
+            Skip for now
+          </Link>
+        )}
+      </Box>
+    </VStack>
+  );
+};
+
+export default PinEntry;

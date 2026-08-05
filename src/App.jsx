@@ -214,7 +214,8 @@ function App() {
 
       <Routes>
         {/* Landing Page */}
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/guide" element={<GuidePage />} />
         <Route path="/nirf" element={<NirfRanking />} />
 

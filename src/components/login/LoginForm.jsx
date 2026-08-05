@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from "react-router-dom";
 import FormHeader from './FormHeader'
 import getEnvironment from '../../getenvironment'
 import { redirectTargetFrom } from '../../authRedirect'
+import PinEntry from './PinEntry'
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin'
 import {
   Box,
   Button,
@@ -21,6 +23,13 @@ const LoginForm = () => {
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  
+  // PIN states
+  const [showPinSetup, setShowPinSetup] = useState(false)
+  const [showPinLogin, setShowPinLogin] = useState(false)
+  const [loginToken, setLoginToken] = useState(null)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+
   // The captcha appears only when the server asks for it — after repeated
   // failures on this address, or while the whole install is under a burst of
   // them. A normal sign-in never sees this.
@@ -29,6 +38,27 @@ const LoginForm = () => {
   const apiUrl = getEnvironment()
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const checkPinConfig = async () => {
+      try {
+        const pinResult = await SecureStoragePlugin.get({ key: 'user_pin' });
+        const tokenResult = await SecureStoragePlugin.get({ key: 'auth_token' });
+        
+        if (pinResult.value && tokenResult.value) {
+          setShowPinLogin(true);
+        }
+      } catch (error) {
+        // Not configured or error reading secure storage
+        console.log('No PIN configured or error reading storage', error);
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+    
+    checkPinConfig();
+  }, []);
+
   const handleForgotPassword = () => {
     // Navigate to the current URL with an additional path segment
     navigate(`/forgot-password`);
@@ -82,14 +112,13 @@ const LoginForm = () => {
       }
 
       if (responseData.token) {
-        localStorage.setItem('token', responseData.token)
+        setLoginToken(responseData.token);
+        setShowPinSetup(true);
+        // We will NOT set localStorage here, PinEntry setup will do it
+      } else {
+        setMessage(responseData.message);
+        window.location.href = redirectTargetFrom(location.search);
       }
-
-      setMessage(responseData.message);
-      // A full load rather than a client-side navigation: the platform navbar
-      // reads the session once on mount, so a router push would land on the
-      // target with a stale "signed out" navbar that bounces straight back.
-      window.location.href = redirectTargetFrom(location.search);
     } catch (error) {
       console.error('An error occurred', error)
       setMessage('An error occurred. Please try again.')
@@ -110,8 +139,26 @@ const LoginForm = () => {
         base: '1rem',
         md: '2rem',
       }}>
-      <FormHeader />
-      <form onSubmit={handleSubmit}>
+      
+      {isCheckingAuth ? (
+        <Text>Loading...</Text>
+      ) : showPinLogin ? (
+        <PinEntry 
+          isSetup={false} 
+          onCancel={() => setShowPinLogin(false)} 
+        />
+      ) : showPinSetup ? (
+        <PinEntry 
+          isSetup={true} 
+          loginToken={loginToken} 
+          onSetupComplete={() => {
+            window.location.href = redirectTargetFrom(location.search) || '/userroles';
+          }} 
+        />
+      ) : (
+        <>
+          <FormHeader />
+          <form onSubmit={handleSubmit}>
         <VStack spacing={3} width='100%'>
           <FormControl>
             <FormLabel>Email</FormLabel>
@@ -181,6 +228,8 @@ const LoginForm = () => {
       </form>
 
       {message && <Text mt={4}>{message}</Text>}
+        </>
+      )}
     </Flex>
   )
 }
