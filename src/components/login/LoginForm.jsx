@@ -92,6 +92,7 @@ const LoginForm = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-App-Name': 'xceed-learning',
         },
         body: JSON.stringify(userData),
         credentials: 'include',

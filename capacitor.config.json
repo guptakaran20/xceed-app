@@ -3,7 +3,7 @@
   "appName": "XCEED",
   "webDir": "dist",
   "server": {
-    "hostname": "nitjtt.netlify.app",
+    "hostname": "xceedlearning",
     "cleartext": true,
     "androidScheme": "https"
   }

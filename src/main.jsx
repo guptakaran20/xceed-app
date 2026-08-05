@@ -8,37 +8,75 @@ import { RecoilRoot } from 'recoil';
 import axios from 'axios';
 import getEnvironment from './getenvironment';
 
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
+
 const helmetContext = {};
+
+// Global handler for 401 Unauthorized responses
+const handleUnauthorized = async () => {
+  localStorage.removeItem('token');
+  try {
+    await SecureStoragePlugin.remove({ key: 'user_pin' });
+    await SecureStoragePlugin.remove({ key: 'auth_token' });
+  } catch (e) {
+    // Ignore plugin errors on web or if keys don't exist
+  }
+  
+  // Only redirect if not already on the login page to avoid infinite loops
+  if (window.location.pathname !== '/login') {
+    window.location.href = '/login';
+  }
+};
 
 const originalFetch = window.fetch;
 // The API host varies by deployment, so ask getEnvironment rather than listing
 // hosts here — a missed host means no Authorization header, and the session
 // then rests entirely on a SameSite=None cookie that private windows drop.
 const apiOrigin = getEnvironment();
-window.fetch = function(url, options = {}) {
+window.fetch = async function(url, options = {}) {
   const token = localStorage.getItem('token');
   const target = typeof url === 'string' ? url : url?.url || String(url ?? '');
   const isOwnServer = target.startsWith(apiOrigin);
 
   if (isOwnServer) {
     options.credentials = 'include';
+    options.headers = {
+      ...options.headers,
+      'X-App-Name': 'xceed-learning',
+    };
     if (token) {
-      options.headers = {
-        ...options.headers,
-        'Authorization': `Bearer ${token}`,
-      };
+      options.headers['Authorization'] = `Bearer ${token}`;
     }
   }
   
-  return originalFetch(url, options);
+  const response = await originalFetch(url, options);
+  
+  // Intercept 401 errors from our own API
+  if (response.status === 401 && isOwnServer) {
+    handleUnauthorized();
+  }
+  
+  return response;
 };
 
 axios.defaults.withCredentials = true;
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
+  config.headers['X-App-Name'] = 'xceed-learning';
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // If the server returns a 401 Unauthorized, automatically log out
+    if (error.response && error.response.status === 401) {
+      handleUnauthorized();
+    }
+    return Promise.reject(error);
+  }
+);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

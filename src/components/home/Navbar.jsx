@@ -75,6 +75,7 @@ export default function Navbar() {
 
   const publicPaths = [
     '/',
+    '/home',
     '/guide',
     '/forgot-password',
     '/nirf',
@@ -137,7 +138,7 @@ export default function Navbar() {
     >
       <div className="tw-max-w-screen-xl tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-mx-auto tw-p-4">
         <Link
-          to="/"
+          to="/home"
           className="tw-flex tw-items-center tw-space-x-3 rtl:tw-space-x-reverse"
         >
           <img src="/clublogo.png" className="tw-h-8" alt="Xceed Logo" />
@@ -164,7 +165,7 @@ export default function Navbar() {
           <ul className="tw-font-medium tw-flex tw-flex-col tw-items-center tw-p-4 md:tw-p-0 tw-mt-4 tw-border tw-rounded-lg tw-space-y-5 md:tw-space-y-0 md:tw-flex-row md:tw-space-x-8 rtl:tw-space-x-reverse md:tw-mt-0 md:tw-border-0 tw-bg-gray-900 tw-border-gray-700 tw-list-none">
             <li>
               <a
-                href="/"
+                href="/home"
                 className="tw-block tw-py-2 tw-px-3 tw-text-cyan-300 tw-rounded md:tw-bg-transparent md:tw-text-cyan-300 md:tw-p-0 hover:tw-text-cyan-500"
                 aria-current="page"
               >
