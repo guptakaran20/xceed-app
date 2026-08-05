@@ -47,10 +47,6 @@ const NAV_ITEMS = [
   // something better — is not navigation: it is what you do *instead* of what
   // you came here for, and it has to be reachable from wherever the thing broke.
   { to: '/learning/bugs', label: 'Bug / Suggestion', icon: '🛠️', foot: true },
-  // Platform-wide stats and queues at a glance. Only an lm-admin (or other
-  // platform-admin) account can open it — the server 403s everyone else — so
-  // the link itself is hidden rather than left to dead-end.
-  { to: '/learning/lm-admin', label: 'Admin', icon: '🛡️', foot: true, adminOnly: true },
 ];
 
 /**
@@ -179,10 +175,10 @@ function ClassSwitcher({ classes, activeClassId, carriedTab, onNavigate }) {
   );
 }
 
-function NavItems({ onNavigate, studentOnly = false, isAdmin = false }) {
+function NavItems({ onNavigate, studentOnly = false }) {
   return (
     <>
-      {NAV_ITEMS.filter((item) => (!item.studentOnly || studentOnly) && (!item.adminOnly || isAdmin)).map((item) => (
+      {NAV_ITEMS.filter((item) => !item.studentOnly || studentOnly).map((item) => (
         <Box
           key={item.to}
           as={NavLink}
@@ -283,7 +279,7 @@ export default function LearningLayout() {
   const studentOnly = isStudentOnly(me?.roles);
 
   return (
-    <Box minH={studentOnly ? '100vh' : 'calc(100vh - 64px)'} bg="gray.50">
+    <Box className="lm-root" minH={studentOnly ? '100vh' : 'calc(100vh - 64px)'} bg="gray.50">
       <Box bg="white" borderBottomWidth="1px" borderColor="gray.200" position="sticky" top={0} zIndex={20}>
         <Container maxW="1400px" py={3}>
           <Flex align="center" gap={3}>
@@ -384,7 +380,7 @@ export default function LearningLayout() {
             position="sticky"
             top="88px"
           >
-            <NavItems studentOnly={studentOnly} isAdmin={Boolean(me?.isAdmin)} />
+            <NavItems studentOnly={studentOnly} />
             <ClassSwitcher
               classes={classes}
               activeClassId={activeClassId}
@@ -400,13 +396,24 @@ export default function LearningLayout() {
 
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>
-            <Icon as="span">🎓</Icon> XCEED Learning
+        <DrawerContent
+          bg="white"
+          maxW="280px"
+          h='100vh' 
+          position="fixed"
+          left={0}
+          top={studentOnly ? 0 : '60px'}
+          bottom={0}
+          m={0}
+          borderRadius={0}
+          pt={6}
+        >
+          <DrawerCloseButton mt={6} />
+          <DrawerHeader pt={4} pb={2}>
+            <Icon as="span" mr={2}>🎓</Icon> XCEED Learning
           </DrawerHeader>
           <DrawerBody>
-            <NavItems onNavigate={onClose} studentOnly={studentOnly} isAdmin={Boolean(me?.isAdmin)} />
+            <NavItems onNavigate={onClose} studentOnly={studentOnly} />
             <ClassSwitcher
               classes={classes}
               activeClassId={activeClassId}

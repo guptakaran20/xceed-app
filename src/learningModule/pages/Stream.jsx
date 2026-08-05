@@ -299,7 +299,7 @@ function CourseworkStreamCard({ item, classId }) {
           <Heading size="sm" color="gray.800" noOfLines={1}>
             {item.title}
           </Heading>
-          <HStack spacing={3} mt={1}>
+          <HStack spacing={3} mt={1} wrap="wrap">
             <Text fontSize="xs" color="gray.400">
               {relativeTime(item.publishedAt)}
             </Text>

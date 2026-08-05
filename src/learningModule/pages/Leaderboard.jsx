@@ -27,7 +27,7 @@ import {
 } from '@chakra-ui/react';
 
 import lmApi from '../api/lmApi';
-import { buttonTextStyles, EmptyState, ErrorState, Loading, SectionCard } from '../components/common';
+import { EmptyState, ErrorState, Loading, SectionCard } from '../components/common';
 import { formatDate } from '../format';
 
 /**
@@ -68,7 +68,6 @@ function Row({ row, highlight, onOpen }) {
             textAlign: 'left',
             cursor: 'pointer',
             _hover: { bg: highlight ? bg : hoverBg },
-            ...buttonTextStyles,
           }
         : {})}
     >
@@ -232,7 +231,7 @@ function StudentPoints({ classId, student, onClose }) {
             <Loading label="Adding it up…" />
           ) : (
             <VStack align="stretch" spacing={5}>
-              <SimpleGrid columns={3} spacing={3}>
+              <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={3}>
                 <Box>
                   <Text fontSize="2xl" fontWeight="700">
                     {data.points}
@@ -420,7 +419,7 @@ function TeacherView({ week, all, classId }) {
   return (
     <VStack align="stretch" spacing={4}>
       <SectionCard title="How the class is doing">
-        <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 4 }} minChildWidth="120px" spacing={4}>
           <Box>
             <Text fontSize="2xl" fontWeight="700">
               {summary.totalPoints}
@@ -505,7 +504,6 @@ function TeacherView({ week, all, classId }) {
                   py={1.5}
                   borderRadius="md"
                   _hover={{ bg: 'blackAlpha.50' }}
-                  {...buttonTextStyles}
                 >
                   <Text fontSize="sm">{row.studentName}</Text>
                   <Badge colorScheme="gray" borderRadius="full">
@@ -601,7 +599,7 @@ export default function Leaderboard() {
   return (
     <VStack align="stretch" spacing={4}>
       <SectionCard title="Where you stand">
-        <SimpleGrid columns={{ base: 3, md: 3 }} spacing={4}>
+        <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={4}>
           <Box>
             <Text fontSize="2xl" fontWeight="700">
               {me?.points ?? 0}
