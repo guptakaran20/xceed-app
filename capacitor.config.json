@@ -3,8 +3,8 @@
   "appName": "XCEED",
   "webDir": "dist",
   "server": {
-    "hostname": "xceedlearning",
+    "hostname": "xceed.learning.app",
     "cleartext": true,
-    "androidScheme": "https"
+    "androidScheme": "http"
   }
 }
