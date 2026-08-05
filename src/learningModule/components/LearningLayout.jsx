@@ -43,10 +43,10 @@ const NAV_ITEMS = [
   // work rather than doing it, and the leaderboard leaves them off entirely —
   // so a "My progress" that was always empty would only invite the question.
   { to: '/learning/profile', label: 'My progress', icon: '🎖️', studentOnly: true },
-  // Last, and separated below. Reporting something broken is not navigation —
-  // it is what you do *instead* of what you came here for, and it has to be
-  // reachable from wherever the thing broke.
-  { to: '/learning/bugs', label: 'Report a bug', icon: '🛠️', foot: true },
+  // Last, and separated below. Reporting something broken — or asking for
+  // something better — is not navigation: it is what you do *instead* of what
+  // you came here for, and it has to be reachable from wherever the thing broke.
+  { to: '/learning/bugs', label: 'Bug / Suggestion', icon: '🛠️', foot: true },
 ];
 
 /**
@@ -279,7 +279,7 @@ export default function LearningLayout() {
   const studentOnly = isStudentOnly(me?.roles);
 
   return (
-    <Box minH={studentOnly ? '100vh' : 'calc(100vh - 64px)'} bg="gray.50">
+    <Box className="lm-root" minH={studentOnly ? '100vh' : 'calc(100vh - 64px)'} bg="gray.50">
       <Box bg="white" borderBottomWidth="1px" borderColor="gray.200" position="sticky" top={0} zIndex={20}>
         <Container maxW="1400px" py={3}>
           <Flex align="center" gap={3}>
@@ -396,10 +396,21 @@ export default function LearningLayout() {
 
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>
-            <Icon as="span">🎓</Icon> XCEED Learning
+        <DrawerContent
+          bg="white"
+          maxW="280px"
+          h='100vh' 
+          position="fixed"
+          left={0}
+          top={studentOnly ? 0 : '60px'}
+          bottom={0}
+          m={0}
+          borderRadius={0}
+          pt={6}
+        >
+          <DrawerCloseButton mt={6} />
+          <DrawerHeader pt={4} pb={2}>
+            <Icon as="span" mr={2}>🎓</Icon> XCEED Learning
           </DrawerHeader>
           <DrawerBody>
             <NavItems onNavigate={onClose} studentOnly={studentOnly} />

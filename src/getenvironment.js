@@ -6,7 +6,7 @@ function getEnvironment() {
   const nitjServer = 'https://xceed.nitj.ac.in';
   
   if (window.Capacitor && window.Capacitor.isNativePlatform()) {
-    return androidEmulator;
+    return nitjServer;
   } else if (currentURL.includes('localhost') || currentURL.includes('127.0.0.1')) {
     return development;
   } else if (currentURL.includes('nitjtt')) {
