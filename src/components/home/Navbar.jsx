@@ -77,6 +77,7 @@ export default function Navbar() {
     '/',
     '/home',
     '/guide',
+    '/privacy',
     '/forgot-password',
     '/nirf',
     '/ams-manual',
