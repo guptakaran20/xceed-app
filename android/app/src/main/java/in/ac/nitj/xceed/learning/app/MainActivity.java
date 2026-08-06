@@ -1,4 +1,4 @@
-package in.ac.nitj.xceed.learning;
+package in.ac.nitj.xceed.learning.app;
 
 import com.getcapacitor.BridgeActivity;
 
