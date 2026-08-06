@@ -67,6 +67,7 @@ export default function Navbar() {
       if (!response.ok) {
         throw new Error('Failed to logout');
       }
+      localStorage.removeItem('token');
       navigate('/login');
     } catch (error) {
       console.error('Error during logout:', error.message);
