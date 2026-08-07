@@ -78,10 +78,12 @@ function FeedPanel({ camera, quality, scale, refreshKey, onError }) {
   const retryTimerRef = useRef(null);
 
   const buildStreamUrl = useCallback(
-    () =>
-      `${CAMERA_API}/preview/stream?jobId=${encodeURIComponent(
+    () => {
+      const token = localStorage.getItem('token');
+      return `${CAMERA_API}/preview/stream?jobId=${encodeURIComponent(
         jobIdRef.current || '',
-      )}&quality=${quality}&scale=${scale}&t=${Date.now()}`,
+      )}&quality=${quality}&scale=${scale}&t=${Date.now()}${token ? `&token=${encodeURIComponent(token)}` : ''}`;
+    },
     [quality, scale],
   );
 

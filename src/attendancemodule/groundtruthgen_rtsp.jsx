@@ -247,7 +247,7 @@ const LivePreview = ({ apiBase, isRunning, acquisitionId, cameraLabel }) => {
                     {isRunning && acquisitionId && (
                         <img
                             key={sessionKey}
-                            src={`${apiBase}/gt-acquisition/preview?acquisitionId=${encodeURIComponent(acquisitionId)}`}
+                            src={`${apiBase}/gt-acquisition/preview?acquisitionId=${encodeURIComponent(acquisitionId)}${localStorage.getItem('token') ? `&token=${encodeURIComponent(localStorage.getItem('token'))}` : ''}`}
                             alt="Live RTSP Preview"
                             style={{ width: '100%', display: 'block' }}
                             onLoad={handleImgLoad}
