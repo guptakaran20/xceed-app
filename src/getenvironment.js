@@ -6,7 +6,7 @@ function getEnvironment() {
   const androidEmulator = 'http://10.0.2.2:8010';
 
   if (window.Capacitor && window.Capacitor.isNativePlatform()) {
-    return androidEmulator;
+    return nitjServer;
   } else if (currentURL.includes('localhost') || currentURL.includes('127.0.0.1')) {
     return development;
   } else if (currentURL.includes('nitjtt')) {
