@@ -114,12 +114,15 @@ export default function ClassLayout() {
       >
         {/* One row, fixed height: the class identity scrolls out of the way as
             the window narrows, but the actions on the right stay put. */}
-        <Flex justify="space-between" align="center" gap={3} wrap="nowrap">
-          {/* Clips itself rather than pushing the actions off the card: without
-              `overflow`, the nowrap children spill past the right edge and the
-              card's own `overflow="hidden"` eats the settings button. */}
-          <HStack spacing={3} flex="1 1 auto" minW={0} overflow="hidden" fontSize="sm" opacity={0.9}>
-            <Heading size="sm" whiteSpace="nowrap" opacity={1}>
+        <Flex
+          direction={{ base: 'column', md: 'row' }}
+          justify="space-between"
+          align={{ base: 'flex-start', md: 'center' }}
+          gap={2}
+        >
+          {/* Identity row: wraps on narrow screens so no chip is clipped. */}
+          <Flex wrap="wrap" gap={2} flex="1 1 auto" minW={0} fontSize="sm" opacity={0.9} align="center">
+            <Heading size="sm" opacity={1}>
               {klass.name}
             </Heading>
             <Text isTruncated minW={0}>
@@ -128,9 +131,9 @@ export default function ClassLayout() {
             <Text whiteSpace="nowrap">👤 {klass.ownerName}</Text>
             <Text whiteSpace="nowrap">📄 {klass.counts?.courseworkCount ?? 0} items</Text>
             {klass.status === 'archived' && <Badge colorScheme="orange">Archived</Badge>}
-          </HStack>
+          </Flex>
 
-          <HStack spacing={2} flexShrink={0}>
+          <HStack spacing={2} flexShrink={0} flexWrap="wrap">
             <Button
               as={NavLink}
               to={`/learning/class/${classId}/people`}

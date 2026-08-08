@@ -34,7 +34,8 @@ function WorkRow({ entry, showStudent }) {
       p={4}
       mb={3}
       align="center"
-      gap={4}
+      gap={3}
+      wrap="wrap"
       _hover={{ borderColor: 'blue.300', textDecoration: 'none' }}
     >
       <Box
@@ -62,7 +63,7 @@ function WorkRow({ entry, showStudent }) {
           )}
         </HStack>
       </Box>
-      <Box textAlign="right">
+      <Box flexShrink={0} textAlign="right">
         <StateBadge state={entry.state} />
         {entry.grade !== null && entry.grade !== undefined && (
           <Text fontSize="sm" fontWeight="700" mt={1}>
