@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { theme, styles, cssReset } from '../attendancemodule/config';
 
-const apiUrl = import.meta.env.VITE_API_URL || '';
+import getEnvironment from '../getenvironment';
+
+const apiUrl = getEnvironment();
 
 function batchYearFromRollNo(rollNo) {
   const prefix = String(rollNo).slice(0, 2);
