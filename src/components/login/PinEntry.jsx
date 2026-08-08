@@ -26,14 +26,17 @@ const PinEntry = ({ onCancel, isSetup, onSetupComplete, loginToken }) => {
     setPin(value);
   };
 
-  const handleSubmit = async () => {
-    if (pin.length !== 4) return;
+  const handleSubmit = async (currentPin = pin) => {
+    // If called via onClick, currentPin is a React Event, so fallback to the state 'pin'
+    if (typeof currentPin !== 'string') currentPin = pin;
+    
+    if (currentPin.length !== 4) return;
     setIsLoading(true);
     
     try {
       if (isSetup) {
         // Save PIN and Token to Secure Storage
-        await SecureStoragePlugin.set({ key: 'user_pin', value: pin });
+        await SecureStoragePlugin.set({ key: 'user_pin', value: currentPin });
         await SecureStoragePlugin.set({ key: 'auth_token', value: loginToken });
         
         toast({
@@ -56,7 +59,7 @@ const PinEntry = ({ onCancel, isSetup, onSetupComplete, loginToken }) => {
         const storedPinResult = await SecureStoragePlugin.get({ key: 'user_pin' });
         const storedPin = storedPinResult.value;
         
-        if (pin === storedPin) {
+        if (currentPin === storedPin) {
           // Success! Restore token to localStorage and navigate
           const storedTokenResult = await SecureStoragePlugin.get({ key: 'auth_token' });
           if (storedTokenResult.value) {
@@ -120,7 +123,12 @@ const PinEntry = ({ onCancel, isSetup, onSetupComplete, loginToken }) => {
         <PinInput 
           type="number" 
           value={pin} 
-          onChange={setPin} 
+          onChange={(val) => {
+            setPin(val);
+            if (val.length === 4 && !isSetup) {
+              handleSubmit(val);
+            }
+          }} 
           onComplete={handlePinComplete}
           mask
           autoFocus
