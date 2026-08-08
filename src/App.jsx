@@ -168,6 +168,8 @@ import LiveReportPage from './attendancemodule/LiveReportPage';
 import RecordStream from './attendancemodule/RecordStream';
 import ErpOverrides from './attendancemodule/ErpOverrides';
 import ErpOverrideAnalysis from './attendancemodule/ErpOverrideAnalysis';
+import StudentPhotoUpdate from './attendancemodule/StudentPhotoUpdate';
+import PhotoSwapBatchSendPage from './platform/PhotoSwapBatchSendPage';
 
 import AMSDashboard from './attendancemodule/AMSDashboard';
 import AMSLayout from './attendancemodule/AMSLayout';
@@ -218,7 +220,7 @@ function App() {
       {/* <div className="app"> */}
 
       {/* <h1>XCEED-Timetable Module</h1>  */}
-      <Navbar />
+      {!window.location.pathname.startsWith('/photo-update') && <Navbar />}
 
       <Routes>
         {/* Landing Page */}
@@ -487,6 +489,9 @@ function App() {
         {/* ─── Conference Manual — public, no auth required ──────── */}
         <Route path="/conference-manual" element={<ConfManual standalone />} />
 
+        {/* ─── Student Photo Update — public, token-authed via ?token= ── */}
+        <Route path="/photo-update" element={<StudentPhotoUpdate />} />
+
         {/* ─── Attendance Module Routes ──────────────────────────── */}
         <Route
           path="/iams-admin/*"
@@ -508,6 +513,7 @@ function App() {
           <Route path="institute-identification" element={<InstituteIdentification />} />
           <Route path="record-stream" element={<RecordStream />} />
           <Route path="embeddings" element={<EmbeddingGeneration />} />
+          <Route path="photo-swap-batch-send" element={<PhotoSwapBatchSendPage />} />
           <Route path="erp-sync" element={<ERPSync />} />
           <Route path="report" element={<Attendancedoc />} />
           <Route path="model" element={<ModelPerformance />} />

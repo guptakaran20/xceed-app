@@ -53,6 +53,7 @@ const NAV = [
   },
   { id: 'cameras', route: '/cameras', label: 'Camera Registry', exact: true },
   { id: 'embeddings', route: '/attendance/embeddings', label: 'Subject Embeddings' },
+  { id: 'photoSwap', route: '/attendance/photo-swap-batch-send', label: 'Photo Swap Batch Send' },
   { id: 'preview', route: '/cameras/preview', label: 'Live Preview' },
   { id: 'record', route: '/attendance/record-stream', label: 'Record Stream' },
   { id: 'extraClass', route: '/attendance/extra-class', label: 'Extra Classes' },
@@ -76,6 +77,7 @@ const COLORS = {
   verify: '#ec4899',
   cameras: '#f97316',
   embeddings: '#f59e0b',
+  photoSwap: '#0ea5e9',
   preview: '#8b5cf6',
   confidence: '#ef4444',
   record: '#ef4444',
@@ -98,7 +100,16 @@ const CSS = `
   .ams-nav-newtab-btn { opacity: 0; transition: opacity .12s, background .12s, color .12s; }
   .ams-nav-item:hover .ams-nav-newtab-btn { opacity: 1; }
   .ams-nav-newtab-btn:hover { background: rgba(99,102,241,0.12) !important; color: #6366f1 !important; }
-  .ams-page-content { /* no animation — CSS animation creates stacking context that traps fixed-position portals */ }
+  .ams-layout-shell { height: 100vh; height: 100dvh; overflow: hidden; }
+  .ams-sidebar-nav { overscroll-behavior: contain; }
+  .ams-main-shell { height: 100%; min-height: 0; overflow: hidden; }
+  .ams-page-content {
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    /* no animation — CSS animation creates stacking context that traps fixed-position portals */
+  }
 `;
 
 export default function AMSLayout() {
@@ -169,9 +180,10 @@ export default function AMSLayout() {
     <HealthProvider>
       <style>{CSS}</style>
       <div
+        className="ams-layout-shell"
         style={{
           display: 'flex',
-          minHeight: '100vh',
+          width: '100%',
           background: T.bg,
           color: T.text,
           fontFamily: T.fontBody,
@@ -196,6 +208,7 @@ export default function AMSLayout() {
 
         {/* Sidebar */}
         <aside
+          className="ams-sidebar"
           style={{
             width: SIDEBAR_W,
             flexShrink: 0,
@@ -205,18 +218,18 @@ export default function AMSLayout() {
             flexDirection: 'column',
             transition: 'width .22s ease, transform .22s ease',
             overflow: 'hidden',
-            position: isMobile ? 'fixed' : 'sticky',
+            position: isMobile ? 'fixed' : 'relative',
             top: 0,
             bottom: 0,
             left: 0,
-            height: '100vh',
+            height: '100%',
             zIndex: isMobile ? 9999 : 1000,
             boxShadow: '1px 0 8px rgba(26,31,60,0.05)',
             transform: isMobile && !mobileOpen ? 'translateX(-100%)' : 'none',
           }}
         >
           {/* Nav */}
-          <nav style={{ flex: 1, overflowY: 'auto', padding: '12px 8px' }}>
+          <nav className="ams-sidebar-nav" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '12px 8px' }}>
             {NAV.map((item) => {
               const active = isActive(item);
               const color = COLORS[item.id] || T.accent;
@@ -373,7 +386,7 @@ export default function AMSLayout() {
         </aside>
 
         {/* Main content wrapper */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: '100vh' }}>
+        <div className="ams-main-shell" style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
           {isMobile && (
             <header
               style={{
@@ -423,7 +436,7 @@ export default function AMSLayout() {
           {/* Main content */}
           <main
             className="ams-page-content"
-            style={{ flex: 1, minWidth: 0, overflow: 'auto' }}
+            style={{ flex: 1, minWidth: 0 }}
           >
             <Outlet />
           </main>
