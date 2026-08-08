@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const archiver = require('archiver');
+const { ZipArchive } = require('archiver');
 const FormData = require('form-data');
 const axios = require('axios');
 const { execSync } = require('child_process');
@@ -45,7 +45,7 @@ async function deploy() {
   console.log('🗜️ Zipping dist folder...');
   await new Promise((resolve, reject) => {
     const output = fs.createWriteStream(ZIP_PATH);
-    const archive = archiver('zip', { zlib: { level: 9 } });
+    const archive = new ZipArchive({ zlib: { level: 9 } });
 
     output.on('close', resolve);
     archive.on('error', reject);

@@ -34,7 +34,7 @@ export function HealthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const sse = new EventSource(`${apiUrl}/attendancemodule/health/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`, { withCredentials: true });
+    const sse = new EventSource(`${apiUrl}/attendancemodule/health/stream${token ? `?_stream_auth_token=${encodeURIComponent(token)}` : ''}`, { withCredentials: true });
 
     sse.onmessage = (e) => {
       try {

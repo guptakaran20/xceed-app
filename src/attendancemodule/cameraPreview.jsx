@@ -82,7 +82,7 @@ function FeedPanel({ camera, quality, scale, refreshKey, onError }) {
       const token = localStorage.getItem('token');
       return `${CAMERA_API}/preview/stream?jobId=${encodeURIComponent(
         jobIdRef.current || '',
-      )}&quality=${quality}&scale=${scale}&t=${Date.now()}${token ? `&token=${encodeURIComponent(token)}` : ''}`;
+      )}&quality=${quality}&scale=${scale}&t=${Date.now()}${token ? `&_stream_auth_token=${encodeURIComponent(token)}` : ''}`;
     },
     [quality, scale],
   );

@@ -1,4 +1,5 @@
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
+import { App as CapacitorApp } from '@capacitor/app';
 import axios from 'axios';
 import getEnvironment from '../getenvironment';
 
@@ -10,13 +11,18 @@ export async function setupOtaUpdater() {
   }
 
   try {
+    // Notify Capgo that this version successfully booted (prevents rollbacks)
+    await CapacitorUpdater.notifyAppReady();
+
     const serverUrl = getEnvironment();
     const versionUrl = `${serverUrl}/api/v1/ota/version.json`;
 
     console.log(`[OTA] Checking for updates at ${versionUrl}`);
     const response = await axios.get(versionUrl);
     const latestVersion = response.data.version;
-    const downloadUrl = response.data.url;
+    const rawUrl = response.data.url;
+    // If the server returns a relative URL, prepend the server URL
+    const downloadUrl = rawUrl.startsWith('http') ? rawUrl : `${serverUrl}${rawUrl.startsWith('/') ? '' : '/'}${rawUrl}`;
 
     if (!latestVersion || latestVersion === '0.0.0') {
       console.log('[OTA] No updates available on server.');
@@ -26,8 +32,7 @@ export async function setupOtaUpdater() {
     const currentVersion = localStorage.getItem('app_ota_version') || '1.0.0';
 
     if (latestVersion !== currentVersion) {
-      console.log(`[OTA] New version found! Current: ${currentVersion}, Latest: ${latestVersion}`);
-      console.log(`[OTA] Downloading from ${downloadUrl}`);
+      console.log(`[OTA] Found update ${latestVersion}! Downloading from: ${downloadUrl}`);
       
       // Notify updater to start downloading
       const versionData = await CapacitorUpdater.download({
@@ -35,13 +40,18 @@ export async function setupOtaUpdater() {
         version: latestVersion,
       });
 
-      console.log('[OTA] Download complete. Applying update...');
+      console.log(`[OTA] Download complete! Update will apply when app is minimized.`);
       
-      // Store the new version in localStorage before applying, 
-      // because the app will restart after this.
+      // Store the new version in localStorage
       localStorage.setItem('app_ota_version', latestVersion);
       
-      await CapacitorUpdater.set({ id: versionData.id });
+      // Wait for the user to minimize or close the app before restarting it
+      CapacitorApp.addListener('appStateChange', async ({ isActive }) => {
+        if (!isActive) {
+          console.log('[OTA] App is in background. Applying update now...');
+          await CapacitorUpdater.set({ id: versionData.id });
+        }
+      });
     } else {
       console.log(`[OTA] App is up to date (Version ${currentVersion}).`);
     }
