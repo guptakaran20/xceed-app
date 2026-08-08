@@ -31,4 +31,4 @@ public/ground-truth/*
 
 .yarn/install-state.gz
 yarn.lock
-.yarn
+.yarn.env 

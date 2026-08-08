@@ -205,8 +205,14 @@ import LearningRoutes from './learningModule/LearningRoutes.jsx';
 import ConfidenceMonitor from './attendancemodule/confidenceMonitor';
 import { MLDataFolder } from './attendancemodule/MLDataFolder.jsx';
 import MLFineTuning from './attendancemodule/MLFineTuning';
+import { setupOtaUpdater } from './utils/otaUpdater';
+import { useEffect } from 'react';
 
 function App() {
+  useEffect(() => {
+    setupOtaUpdater();
+  }, []);
+
   return (
     <Router>
       {/* <div className="app"> */}
