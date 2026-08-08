@@ -77,6 +77,11 @@ const PinEntry = ({ onCancel, isSetup, onSetupComplete, loginToken }) => {
       }
     } catch (error) {
       console.error(error);
+      const errMsg = (error.message || '').toLowerCase();
+      if (errMsg.includes('token') || errMsg.includes('not found') || errMsg.includes('invalid') || errMsg.includes('exist')) {
+        handleResetPin();
+        return;
+      }
       toast({
         title: 'Error processing PIN.',
         description: error.message || 'Please try again.',
@@ -141,9 +146,14 @@ const PinEntry = ({ onCancel, isSetup, onSetupComplete, loginToken }) => {
 
       <Box mt={4}>
         {!isSetup ? (
-          <Link color="blue.300" onClick={handleResetPin} fontSize="sm">
-            Forgot PIN? Login with Password
-          </Link>
+          <VStack spacing={2}>
+            <Link color="blue.300" onClick={handleResetPin} fontSize="sm">
+              Forgot PIN? Login with Password
+            </Link>
+            <Link color="blue.300" onClick={handleResetPin} fontSize="sm">
+              Switch Account
+            </Link>
+          </VStack>
         ) : (
           <Link color="gray.400" onClick={() => {
             // Skip PIN setup

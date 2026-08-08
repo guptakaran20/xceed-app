@@ -33,6 +33,7 @@ import useStableNavigate from '../hooks/useStableNavigate';
 import { canCreateClass, isStudentOnly } from '../roles';
 import NotificationBell from './NotificationBell';
 import { buttonTextStyles } from './common';
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
 const NAV_ITEMS = [
   { to: '/learning', label: 'Classes', icon: '🏫', end: true },
@@ -271,6 +272,12 @@ export default function LearningLayout() {
       console.error('Error during logout:', error.message);
     }
     localStorage.removeItem('token');
+    try {
+      await SecureStoragePlugin.remove({ key: 'user_pin' });
+      await SecureStoragePlugin.remove({ key: 'auth_token' });
+    } catch (e) {
+      console.error('Error removing secure storage on logout', e);
+    }
     navigate('/login', { replace: true });
   }, [navigate]);
 

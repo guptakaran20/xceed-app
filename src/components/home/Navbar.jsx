@@ -7,6 +7,7 @@ import getEnvironment from '../../getenvironment';
 import { Text, Button, Flex } from '@chakra-ui/react';
 import { isStudentOnly } from '../../learningModule/roles';
 import { loginPathFor } from '../../authRedirect';
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
 export default function Navbar() {
   const [navbarOpen, setNavbarOpen] = useState(false);
@@ -68,6 +69,12 @@ export default function Navbar() {
         throw new Error('Failed to logout');
       }
       localStorage.removeItem('token');
+      try {
+        await SecureStoragePlugin.remove({ key: 'user_pin' });
+        await SecureStoragePlugin.remove({ key: 'auth_token' });
+      } catch (e) {
+        console.error('Error removing secure storage on logout', e);
+      }
       navigate('/login');
     } catch (error) {
       console.error('Error during logout:', error.message);
